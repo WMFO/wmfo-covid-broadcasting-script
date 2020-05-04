@@ -65,7 +65,7 @@ while true ; do
 		current_seconds=`date +%s`
 		sleep_seconds=$(( $next_show_date_seconds - $current_seconds - 120))
 
-		if [ "$sleep_seconds" > "0" ] ; then
+		if [ "$sleep_seconds" -gt "0" ] ; then
 		        echo Sleeping $sleep_seconds seconds until the scheduled show start...
 		        sleep $sleep_seconds # Wait that number of seconds
 		fi
