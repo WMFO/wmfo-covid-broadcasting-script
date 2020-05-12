@@ -4,14 +4,29 @@ written by nick@wmfo.org around 4/30/20
 
 A set of scripts we are using to run shows during the COVID pandemic.
 
-1. A script to run shows called wmfo-show-robot.sh
-2. A script to manipulate Axia routing and play a show at the specified time
-
-## Overview
+1. A script to run shows called wmfo-rd-show-robot.sh
+2. A script to send Rivendell Macro Language (RML) commands to Rivendell to start shows (fade-rd-show.sh)
 
 I decided to try to write it in bash (horrible idea, don't do it, not pretty -- if anyone asks I will deny that I wrote these). Anyways here's the result.
 
-## Overview Email
+## Version 1.1 - the robot should start shows on time
+
+I tweaked the script using a new set of RD commands in the fade-rd-show.sh script designed to fade out the currently playing track. The wmfo-rd-show-robot.sh has been altered to call fade-rd-show.sh and wait until 25 seconds before the top of the hour to trigger it. This (combined with the time required to clear the log and whatnot along with the 22.2 seconds for the announcement) started a show exactly on time in my testing. The new RML in the fade-rd-show.sh script uses:
+
+- `rmlsend EX\ 999997\!` if automation is on, which turns it off
+- `rmlsend LL\ 1\ BLANK\!` if automation is off, which clears the main log
+- `rmlsend PX\ 1\ 3004\!` This is the WMFO shows pre-recorded announcement
+- `rmlsend PN\ 1\!` Press play next (second track in queue or first if not running), which should fade out existing track
+- `rmlsend PX\ 1\ 999996\!` Adds the "restart automation" cart
+- `rmlsend PX\ 1\ $cart\!` Queues up the specified show (inserts in reverse order for some reason, so)
+
+And adds a few sleep seconds in there.
+
+## Version 1.0
+
+Used the play-rd-show.sh script, which waited until the end of the song to play the track.
+
+## Overview of V0.9 which used bash
 
 Alright I rejiggered the scripts to get continuous play working and it's
 uploaded to github at https://github.com/WMFO/wmfo-covid-broadcasting-script.
