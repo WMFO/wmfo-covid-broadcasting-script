@@ -21,7 +21,7 @@ function get_next_show() {
 	current_date=`date +%s -d '1 minute ago'`
 	# I created a fake show in 2030 as the maximum
 	next_show="20300101_0000-not-actual-show"
-	# wow that syntax is ugly, but it looks through the show names
+	# wow that syntax is ugly, but it loops through the show names
 	for show in "${shows[@]}"
 	do
 		next_show_date=`get_show_date $next_show seconds`
@@ -63,14 +63,14 @@ while true ; do
 		echo "The next show is within an hour; I will get ready to play it:"
 		cart_number=`mysql Rivendell -sN -u rduser -h 192.168.9.240 -e "select NUMBER from CART where GROUP_NAME = 'Shows' and TITLE = '$next_show'"`
 		current_seconds=`date +%s`
-		sleep_seconds=$(( $next_show_date_seconds - $current_seconds - 120))
+		sleep_seconds=$(( $next_show_date_seconds - $current_seconds - 25))
 
 		if [ "$sleep_seconds" -gt "0" ] ; then
 		        echo Sleeping $sleep_seconds seconds until the scheduled show start...
 		        sleep $sleep_seconds # Wait that number of seconds
 		fi
 
-		./play-rd-show.sh "$cart_number"
+		./fade-rd-show.sh "$cart_number"
 	else
 		current_seconds=`date +%s`
 		minutes_away=`echo "( $next_show_date_seconds - $current_seconds ) / 60" | bc`
